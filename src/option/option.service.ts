@@ -19,6 +19,12 @@ export class OptionService {
     private lessonRepository: Repository<LessonEntity>,
   ) {}
 
+  message = {
+    en: ['Lesson', 'After', 'minutes'],
+    ru: ['Урок', 'Через', 'минут'],
+    ua: ['Урок', 'Через', 'хвилин'],
+  };
+
   @Cron('10 * * * * *')
   async handleCron() {
     console.log(`Cron execute ${moment().toDate()}`);
@@ -61,16 +67,24 @@ export class OptionService {
               timeMoment.clone().add(item.notifyMinutes + 1, 'minutes'),
             )
         ) {
-          const { name, surname } = await this.studentRepository.findOne({
+          const { name, surname, userId } =
+            await this.studentRepository.findOne({
+              where: {
+                id: lesson.studentId,
+              },
+            });
+          const { locale } = await this.optionRepository.findOne({
             where: {
-              id: lesson.studentId,
+              userId,
             },
           });
+
+          const message = this.message[locale];
           if (lesson.userId === item.userId) {
             this.sentNotification(
               item.webviewToken,
-              `Lesson - ${name} ${surname}`,
-              `After ${item.notifyMinutes} minutes`,
+              `${message[0]} - ${name} ${surname}`,
+              `${message[1]} ${item.notifyMinutes} ${message[2]}`,
             );
           }
         }
