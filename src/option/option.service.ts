@@ -63,7 +63,7 @@ export class OptionService {
           moment(lesson.date)
             .utc()
             .isBetween(
-              timeMoment,
+              timeMoment.clone().add(item.notifyMinutes, 'minutes'),
               timeMoment.clone().add(item.notifyMinutes + 1, 'minutes'),
             )
         ) {
