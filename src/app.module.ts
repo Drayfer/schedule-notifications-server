@@ -18,6 +18,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
+      schema: 'public',
       entities: [UserEntity, StudentEntity, LessonEntity, OptionEntity],
       ssl: true,
       extra: {
